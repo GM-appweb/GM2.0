@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🚨 Cotizador GM - Prosegur Alarmas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffbe6;
+      margin: 0;
+      padding: 0;
+      color: #111;
+    }
+
+    header {
+      background: #cc0000;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    .contenedor {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #0003;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      background: #ffef99;
+      padding: 15px;
+      border: 2px dashed #cc0000;
+      font-size: 1.2em;
+    }
+
+    .botones {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      padding: 15px;
+      background: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #990000;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    @media screen and (max-width: 600px) {
+      .botones {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🚨 Cotizador GM</h1>
+    <p>Alarmas Prosegur con instalación inmediata</p>
+  </header>
+
+  <div class="contenedor">
+    <label for="nombre">👤 Nombre del cliente</label>
+    <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
+
+    <label for="telefono">📱 WhatsApp</label>
+    <input type="tel" id="telefono" placeholder="Ej: 1123456789">
+
+    <label for="pack">📦 Pack de alarmas</label>
+    <select id="pack">
+      <option value="PACK ESENCIAL">PACK ESENCIAL - $120.000</option>
+      <option value="PACK COMPLETO">PACK COMPLETO - $180.000</option>
+      <option value="PACK PREMIUM">PACK PREMIUM - $250.000</option>
+    </select>
+
+    <label for="descuento">💸 Descuento aplicado</label>
+    <select id="descuento">
+      <option value="0">Sin descuento</option>
+      <option value="10">10%</option>
+      <option value="20">20%</option>
+      <option value="30">30%</option>
+    </select>
+
+    <div class="resultado" id="resultado">
+      Total estimado: $0
+    </div>
+
+    <div class="botones">
+      <button onclick="calcular()">💰 Calcular</button>
+      <button onclick="enviarWhatsApp()">📲 Enviar por WhatsApp</button>
+      <button onclick="descargarPDF()">📄 Guardar PDF</button>
+    </div>
+  </div>
+
+  <footer>
+    Cotizador GM © 2025 - Todos los derechos reservados
+  </footer>
+
+  <script>
+    const precios = {
+      "PACK ESENCIAL": 120000,
+      "PACK COMPLETO": 180000,
+      "PACK PREMIUM": 250000,
+    };
+
+    function calcular() {
+      const pack = document.getElementById("pack").value;
+      const descuento = parseInt(document.getElementById("descuento").value);
+      const precio = precios[pack];
+      const total = precio - (precio * descuento / 100);
+      document.getElementById("resultado").textContent = `Total estimado: $${total.toLocaleString()}`;
+    }
+
+    function enviarWhatsApp() {
+      const nombre = document.getElementById("nombre").value;
+      const telefono = document.getElementById("telefono").value;
+      const pack = document.getElementById("pack").value;
+      const descuento = document.getElementById("descuento").value;
+      const precio = precios[pack];
+      const total = precio - (precio * descuento / 100);
+
+      const mensaje = `📋 *Presupuesto PROSEGUR ALARMAS*\n\n👤 Cliente: ${nombre}\n📱 WhatsApp: ${telefono}\n📦 Pack: ${pack}\n💸 Descuento: ${descuento}%\n\n✅ *Total estimado: $${total.toLocaleString()}*\n\n⏳ Instalación inmediata. Oferta válida por 24hs.`;
+
+      const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    }
+
+    function descargarPDF() {
+      const nombre = document.getElementById("nombre").value;
+      const telefono = document.getElementById("telefono").value;
+      const pack = document.getElementById("pack").value;
+      const descuento = document.getElementById("descuento").value;
+      const precio = precios[pack];
+      const total = precio - (precio * descuento / 100);
+
+      const contenido = `
+        Cotizador GM - Prosegur Alarmas\n
+        Cliente: ${nombre}
+        WhatsApp: ${telefono}
+        Pack: ${pack}
+        Descuento: ${descuento}%
+        Total estimado: $${total.toLocaleString()}
+        Oferta válida por 24hs.
+      `;
+
+      const blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = "Presupuesto_Prosegur.txt";
+      enlace.click();
+    }
+  </script>
+
+</body>
+</html>
