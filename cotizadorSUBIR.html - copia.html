@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚨 Globex Connec S.A - Cotizador Inteligente</title>
+  <style>
+    section, .formulario, .result, table, h1 {
+      border: 2px solid #e0a800;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    body {
+      background: linear-gradient(135deg, #fff86b 0%, #fef08a 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #222;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      color: #d35400;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th {
+      background-color: #fbbf24;
+      color: #000;
+      padding: 10px;
+      font-size: 13px;
+    }
+    td {
+      padding: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #fffdd0;
+    }
+    tbody tr:nth-child(odd) {
+      background-color: #fffbe0;
+    }
+    .result {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .formulario {
+      background: #fffde7;
+      border: 2px solid #facc15;
+      padding: 25px;
+      border-radius: 12px;
+      margin-top: 40px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .formulario h2 {
+      font-size: 18px;
+      color: #d97706;
+      margin-bottom: 20px;
+    }
+    .boton {
+      background: #f59e0b;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .boton:hover {
+      background: #ea580c;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="login-container" style="background-color: #fff; border: 2px solid black; padding: 20px; max-width: 400px; margin: 50px auto; border-radius: 15px; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center;">INICIAR SESIÓN</h2>
+    <label for="email">USUARIO (Gmail):</label>
+    <input type="email" id="email" placeholder="correo@gmail.com">
+    <label for="password">CONTRASEÑA:</label>
+    <input type="password" id="password" placeholder="********">
+    <button onclick="login()" style="width: 100%; padding: 10px; background-color: black; color: yellow; font-weight: bold; border-radius: 8px;">INICIAR</button>
+    <p style="text-align: center; margin-top: 15px;">
+      <a href="#" onclick="forgotPassword()">¿Olvidó su contraseña?</a>
+    </p>
+  </div>
+
+  <div id="main-content" style="display: none;">
+    <h1>🚨 Cotizador<br>GM - Globex Connec S.A</h1>
+
+    <label for="pack">📦 Selecciona un Pack:</label>
+    <select id="pack" onchange="actualizarOpciones()">
+      <option value="">-- Selecciona --</option>
+      <option value="PACK ESENCIAL VIVIENDA">Pack Esencial Vivienda</option>
+      <option value="PACK PLUS VIVIENDA">Pack Plus Vivienda</option>
+      <option value="PACK PREMIUM VIVIENDA">Pack Premium Vivienda</option>
+      <option value="PACK ESENCIAL NEGOCIO">Pack Esencial Negocio</option>
+      <option value="PACK PLUS NEGOCIO">Pack Plus Negocio</option>
+    </select>
+
+    <label for="instalacion">🔧 Oferta de Instalación:</label>
+    <select id="instalacion" onchange="calcular()">
+      <option value="bruto">Bruto</option>
+      <option value="oferta90">Oferta al 90%</option>
+      <option value="oferta95">Oferta al 95%</option>
+      <option value="oferta96">Oferta al 96%</option>
+      <option value="oferta97">Oferta al 97%</option>
+      <option value="oferta98">Oferta al 98%</option>
+      <option value="oferta99">Oferta al 99%</option>
+      <option value="oferta100">Oferta al 100%</option>
+      <option value="oferta2">Oferta 2</option>
+      <option value="oferta3">Oferta 3</option>
+      <option value="oferta4">Oferta 4</option>
+    </select>
+
+    <label for="descuento">🎁 Descuento en Abono:</label>
+    <select id="descuento" onchange="calcular()">
+      <option value="0">Sin descuento</option>
+      <option value="0.25">25% Descuento</option>
+      <option value="0.35">35% Descuento</option>
+      <option value="0.40">40% Descuento</option>
+      <option value="0.50">50% Descuento</option>
+    </select>
+
+    <label>🔌 Dispositivos Adicionales:</label>
+    <table>
+      <thead>
+        <tr>
+          <th>Dispositivo</th>
+          <th>Precio Lista</th>
+          <th>Dispo con el -95%</th>
+          <th>Abono Disp</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="adicionales"></tbody>
+    </table>
+
+    <label style="margin-top:20px; display:block;">
+      <input type="checkbox" id="iva" onchange="calcular()"> Incluir IVA (21%)
+    </label>
+
+    <div class="result" id="resultadoInstalacion">💸 Total Instalación: $ 0</div>
+    <div class="result" id="resultadoAbono">📆 Total Abono Mensual: $ 0</div>
+
+    <div class="formulario">
+      <h2>📩 Enviar Presupuesto por WhatsApp</h2>
+      <label for="nombre">👤 Nombre:</label>
+      <input type="text" id="nombre" placeholder="Tu nombre completo">
+      <label for="email">📧 Email:</label>
+      <input type="email" id="emailCotizador" placeholder="ejemplo@correo.com">
+      <label for="whatsapp">📱 WhatsApp:</label>
+      <input type="text" id="whatsapp" placeholder="Número con código de país">
+      <button class="boton" onclick="enviarPresupuesto()">Enviar a WhatsApp</button>
+    </div>
+
+    <div style="margin-top:50px; padding:25px; background:#fff8b3; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+      <h2 style="text-align:center; color:#d97706;">🔒 Kit de instalación real entregado</h2>
+      <div style="text-align:center; margin:20px 0;">
+        <img src="https://alarmasdomiciliarias.dir.ar/wp-content/uploads/2024/06/alarmas-domiciliarias-prosegur-3-1024x574.png" alt="Kit de instalación Prosegur" style="max-width:100%; border-radius:10px; box-shadow:0 0 8px rgba(0,0,0,0.2);">
+      </div>
+      <p style="font-size:14px; line-height:1.8;">
+        📢 <strong>¡PROMO EXCLUSIVA!</strong><br>
+        🏢 Instalación profesional, rápida + equipamiento completo en descuento<br><br>
+        🔐 Tu hogar o comercio protegido las 24hs con la tecnología inalámbrica: consultar sensores aplicados<br><br>
+        ✅ Sensores de movimiento con cámara de alta precisión<br>
+        ✅ Sensores de movimiento ciegos<br>
+        ✅ Teclado inteligente para control manual<br>
+        ✅ Sirena de alta potencia<br>
+        ✅ Botones de emergencia (Policía, Bomberos y Ambulancia)<br>
+        ✅ Carteles perimetrales de seguridad (x3)<br>
+        ✅ Central con batería de respaldo (funciona incluso con cortes de luz)<br>
+        ✅ Back-up por aire + chip GPRS satelital<br>
+        ✅ App móvil con botón de pánico y control total de tu alarma<br>
+        ✅ Incluye placa y calcos de seguridad 🔒<br><br>
+        🎁 <strong>PROMOCIÓN válida por 24hs</strong><br><br>
+        🔧 Instalación completa y configuración<br>
+        🔥 Últimos 5 equipos 👉 <strong>¡HOY solo $..... + IVA</strong><br>
+        💳 Hasta en 3, 6 o 12 cuotas sin interés o con los medios habilitados Prosegur.<br><br>
+        🛡️ Servicio de monitoreo 24/7 con asistencia policial, médica y técnica incluida<br>
+        💰 Valor mensual: + IVA
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const packs = {
+      "PACK ESENCIAL VIVIENDA": {
+        instalacion: {
+          bruto: 1366850,
+          oferta90: 136685,
+          oferta95: 68343,
+          oferta96: 54674,
+          oferta97: 41006,
+          oferta98: 27337,
+          oferta99: 13669,
+          oferta100: 0,
+          oferta2: 72900,
+          oferta3: 39900,
+          oferta4: 49900
+        },
+        abono: 67755
+      },
+      "PACK PLUS VIVIENDA": {
+        instalacion: {
+          bruto: 1495050,
+          oferta90: 149505,
+          oferta95: 74752,
+          oferta96: 59802,
+          oferta97: 44851,
+          oferta98: 29901,
+          oferta99: 14950,
+          oferta100: 0,
+          oferta2: 82900,
+          oferta3: 44900,
+          oferta4: 54900
+        },
+        abono: 71275
+      },
+      "PACK PREMIUM VIVIENDA": {
+        instalacion: {
+          bruto: 1713250,
+          oferta90: 171325,
+          oferta95: 85662,
+          oferta96: 68530,
+          oferta97: 51400,
+          oferta98: 34265,
+          oferta99: 17132,
+          oferta100: 0,
+          oferta2: 92900,
+          oferta3: 54900,
+          oferta4: 64900
+        },
+        abono: 78315
+      },
+      "PACK ESENCIAL NEGOCIO": {
+        instalacion: {
+          bruto: 1366850,
+          oferta90: 136685,
+          oferta95: 68343,
+          oferta96: 54674,
+          oferta97: 41006,
+          oferta98: 27337,
+          oferta99: 13669,
+          oferta100: 0,
+          oferta2: 94900,
+          oferta3: 55900,
+          oferta4: 61900
+        },
+        abono: 75735
+      },
+      "PACK PLUS NEGOCIO": {
+        instalacion: {
+          bruto: 1456850,
+          oferta90: 145685,
+          oferta95: 72843,
+          oferta96: 58274,
+          oferta97: 43705,
+          oferta98: 29137,
+          oferta99: 14568,
+          oferta100: 0,
+          oferta2: 100900,
+          oferta3: 60900,
+          oferta4: 65900
+        },
+        abono: 79455
+      }
+    };
+
+    const adicionales = {
+      "DETECTOR CON CAMARA PIRCAM": [149450, 5355],
+      "DETECTOR DE MOVIMIENTO INTERIOR": [90000, 3520],
+      "MAGNETICO": [128200, 3520],
+      "DETECTOR CON CAMARA PIRCAM EXTERIOR": [149450, 5355],
+      "BARRERA LATERAL EXTERIOR": [610600, 7255],
+      "VOLUMETRICO EXTERIOR": [424950, 7255],
+      "CAMARA IP INTERIOR": [569050, 8350],
+      "CAMARA IP EXTERIOR": [636700, 8350]
+    };
+
+    const adContainer = document.getElementById("adicionales");
+    Object.keys(adicionales).forEach(name => {
+      const [precio, abono] = adicionales[name];
+      const precioConDescuento = precio * 0.05;
+      adContainer.innerHTML += `<tr>
+        <td>${name}</td>
+        <td>$ ${precio.toLocaleString()}</td>
+        <td>$ ${precioConDescuento.toFixed(0).toLocaleString()}</td>
+        <td>$ ${abono.toLocaleString()}</td>
+        <td><input type="number" id="ad_${name}" value="0" min="0" onchange="calcular()"></td>
+      </tr>`;
+    });
+
+    function actualizarOpciones() {
+      calcular();
+    }
+
+    function calcular() {
+      const packSel = document.getElementById("pack").value;
+      const instalacionSel = document.getElementById("instalacion").value;
+      const descuento = parseFloat(document.getElementById("descuento").value);
+      const iva = document.getElementById("iva").checked;
+
+      if (!packSel) {
+        document.getElementById("resultadoInstalacion").innerText = `💸 Total Instalación: $ 0`;
+        document.getElementById("resultadoAbono").innerText = `📆 Total Abono Mensual: $ 0`;
+        return;
+      }
+
+      const pack = packs[packSel];
+      let instalacionBase = pack.instalacion[instalacionSel];
+      if (instalacionBase === undefined) instalacionBase = 0;
+      let abonoBase = pack.abono;
+
+      let adicionalesCostoLista = 0;
+      let adicionalesAbono = 0;
+
+      Object.keys(adicionales).forEach(name => {
+        const qty = parseInt(document.getElementById("ad_" + name).value) || 0;
+        const [precio, abono] = adicionales[name];
+        adicionalesCostoLista += precio * qty;
+        adicionalesAbono += abono * qty;
+      });
+
+      let adicionalesCostoConDesc = adicionalesCostoLista * 0.05;
+      let totalInstalacion = instalacionBase + adicionalesCostoConDesc;
+      let totalAbono = (abonoBase + adicionalesAbono) * (1 - descuento);
+
+      if (iva) {
+        totalInstalacion *= 1.21;
+        totalAbono *= 1.21;
+      }
+
+      document.getElementById("resultadoInstalacion").innerText = `💸 Instalación: $ ${totalInstalacion.toFixed(2)}`;
+      document.getElementById("resultadoAbono").innerText = ` Abono Mensual: $ ${totalAbono.toFixed(2)}`;
+    }
+
+    function enviarPresupuesto() {
+      calcular();
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("emailCotizador").value;
+      const whatsapp = document.getElementById("whatsapp").value;
+      const packSel = document.getElementById("pack").value;
+      const instalacion = document.getElementById("resultadoInstalacion").textContent;
+      const abono = document.getElementById("resultadoAbono").textContent;
+
+      if (!nombre || !email || !whatsapp || !packSel) {
+        alert("Por favor, completa todos los campos antes de enviar.");
+        return;
+      }
+
+      const mensaje =
+        `**📋 *Presupuesto PROSEGUR ALARMAS*
+
+*Primer descuento. Caduca a las 24hs*
+
+Instalaciones inmediatas, priorizamos la seguridad de tu familia.
+
+👤 *Cliente*: *${nombre}*
+📧 *Email: ${email}*
+📱 *WhatsApp: ${whatsapp}*
+📦 *Pack: ${packSel}*
+
+✅ *Equipamiento completo con sensores, sirena, botón de pánico, app móvil y más*.
+🚨 *Monitoreo 24/7 incluido*
+
+🔥 *Últimos 5 equipos 👉 ¡Solo por HOY en descuento*
+
+💸 *Activación por única vez: ${instalacion}*
+
+💳 *Activación hasta en 3, 6 o 12 cuotas sin interés o con los medios habilitados por la empresa*.
+
+💰 *Valor sistema de monitoreo: ${abono} + IVA*
+
+📞 *Contáctanos para activar tu alarma y proteger tu hogar o negocio*.
+⚠️ *¡Oferta válida solo por hoy!
+¡*Gracias por elegirnos*!`;
+
+      const url = `https://wa.me/${whatsapp.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    }
+
+    function login() {
+      const emailInput = document.getElementById("email").value.trim();
+      const passInput = document.getElementById("password").value.trim();
+
+      if (!emailInput || !passInput) {
+        alert("Completa usuario y contraseña");
+        return;
+      }
+      // Simulación simple: usuario es cualquier gmail y contraseña es "12345"
+      if (emailInput.endsWith("@gmail.com") && passInput === "12345") {
+        document.getElementById("login-container").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+      } else {
+        alert("Usuario o contraseña incorrectos");
+      }
+    }
+
+    function forgotPassword() {
+      alert("Para recuperar su contraseña, contacte al administrador.");
+    }
+
+    // Inicializar tabla adicionales y cálculo
+    window.onload = () => {
+      calcular();
+    }
+  </script>
+</body>
+</html>
